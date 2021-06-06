@@ -1,16 +1,48 @@
-import React from "react";
-
+import React, { useState, useEffect } from 'react';
+import DogNameContainer from './DogNameContainer';
+import DogCard from './DogCard';
 function App() {
+  const [goodDogFilter, setGoodDogFilter] = useState(false);
+  const [dogs, setDogs] = useState([]);
+  const [selectedDog, setSelectedDog] = useState({});
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/pups`)
+      .then((r) => r.json())
+      .then(setDogs);
+  }, []);
+
+  function changeDogFilter() {
+    setGoodDogFilter((goodDogFilter) => !goodDogFilter);
+  }
+
+  function onUpdateDog(updatedDog) {
+    const updatedDogs = dogs.map((dog) =>
+      dog.id === updatedDog.id ? updatedDog : dog
+    );
+    setDogs(() => updatedDogs);
+  }
+
+  let visibleDogs = dogs;
+  if (goodDogFilter) {
+    visibleDogs = visibleDogs.filter((dog) => dog.isGoodDog);
+  }
+  // const visibleDogs = dogs.filter((dog) => {
+  //   if (goodDogFilter) {
+  //     if (dog.isGoodDog) return true;
+  //     return false;
+  //   }
+  //   return true;
+  // });
   return (
-    <div className="App">
-      <div id="filter-div">
-        <button id="good-dog-filter">Filter good dogs: OFF</button>
+    <div className='App'>
+      <div id='filter-div'>
+        <button id='good-dog-filter' onClick={changeDogFilter}>
+          Filter good dogs: {goodDogFilter ? 'ON' : 'OFF'}
+        </button>
       </div>
-      <div id="dog-bar"></div>
-      <div id="dog-summary-container">
-        <h1>DOGGO:</h1>
-        <div id="dog-info"></div>
-      </div>
+      <DogNameContainer dogs={visibleDogs} selectDog={setSelectedDog} />
+      <DogCard dog={selectedDog} onUpdateDog={onUpdateDog} />
     </div>
   );
 }
