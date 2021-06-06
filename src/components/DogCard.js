@@ -1,6 +1,7 @@
 import React from 'react';
 
-const DogCard = ({ dog, onUpdateDog }) => {
+function DogCard({ dog, onUpdateDog }) {
+  if (!dog) return <h3>Select a doggo</h3>;
   const { id, name, isGoodDog, image } = dog;
   function changeDogBehaviorStatus() {
     fetch(`http://localhost:3001/pups/${id}`, {
@@ -30,6 +31,6 @@ const DogCard = ({ dog, onUpdateDog }) => {
       )}
     </div>
   );
-};
+}
 
 export default DogCard;

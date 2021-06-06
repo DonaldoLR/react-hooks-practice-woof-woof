@@ -4,7 +4,7 @@ import DogCard from './DogCard';
 function App() {
   const [goodDogFilter, setGoodDogFilter] = useState(false);
   const [dogs, setDogs] = useState([]);
-  const [selectedDog, setSelectedDog] = useState({});
+  const [selectedDogId, setSelectedDogId] = useState(null);
 
   useEffect(() => {
     fetch(`http://localhost:3001/pups`)
@@ -20,7 +20,7 @@ function App() {
     const updatedDogs = dogs.map((dog) =>
       dog.id === updatedDog.id ? updatedDog : dog
     );
-    setDogs(() => updatedDogs);
+    setDogs(updatedDogs);
   }
 
   let visibleDogs = dogs;
@@ -34,6 +34,7 @@ function App() {
   //   }
   //   return true;
   // });
+  const selectedDog = dogs.find((dog) => dog.id === selectedDogId);
   return (
     <div className='App'>
       <div id='filter-div'>
@@ -41,7 +42,7 @@ function App() {
           Filter good dogs: {goodDogFilter ? 'ON' : 'OFF'}
         </button>
       </div>
-      <DogNameContainer dogs={visibleDogs} selectDog={setSelectedDog} />
+      <DogNameContainer dogs={visibleDogs} selectDog={setSelectedDogId} />
       <DogCard dog={selectedDog} onUpdateDog={onUpdateDog} />
     </div>
   );
